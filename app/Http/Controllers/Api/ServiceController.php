@@ -18,13 +18,29 @@ class ServiceController extends Controller
             return response()->json([
                 "success" => false,
                 "message" => "No services found.",
+                "data" => null
             ], 200);
+        }
+
+        $dataRes = [];
+
+        foreach ($services as $service) {
+            $serviceData = [
+                "id" => $service->id,
+                "name" => $service->name,
+                "description" => $service->description,
+                "status" => $service->status ? "Active" : "Inactive",
+                "created_at" => $service->created_at,
+                "updated_at" => $service->created_at,
+            ];
+
+            $dataRes[] = $serviceData;
         }
 
         return response()->json([
             "success" => true,
             "message" => "Services retrieved successfully.",
-            "data" => $services,
+            "data" => $dataRes,
         ], 200);
     }
 
@@ -58,5 +74,64 @@ class ServiceController extends Controller
                 "message" => "the data create is fail!",
             ], 200);
         }
+    }
+
+    public function update_service(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required',
+            'status' => 'required|integer|in:0,1'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => "Some fields are empty or contain invalid data.",
+            ], 200);
+        }
+
+        $service = TbService::find($id);
+
+        if (!$service) {
+            return response()->json([
+                "success" => false,
+                "message" => "Service not found.",
+            ], 200);
+        }
+
+        // Update the service attributes
+        $service->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'status' => $request->status
+        ]);
+
+        return response()->json([
+            "success" => true,
+            "message" => "Service updated successfully.",
+        ], 200);
+    }
+
+    public function delete_service($id)
+    {
+        $service = TbService::find($id);
+        if (!$service) {
+            return response()->json([
+                "success" => false,
+                "message" => "Service not found!",
+                "data" => null
+            ], 200);
+        }
+
+        // Perform soft delete by updating the 'deleted_at' column
+        $service->update([
+            'deleted_at' => now() // assuming 'deleted_at' is a timestamp field
+        ]);
+
+        return response()->json([
+            "success" => true,
+            "message" => "Service deleted successfully by soft delete",
+        ], 200);
     }
 }

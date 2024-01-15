@@ -39,5 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // service
     Route::post('service', [ServiceController::class, 'store_service'])->name('service');
     Route::get('service/list', [ServiceController::class, 'list_service'])->name('service');
+    Route::put('service/{id}', [ServiceController::class, 'update_service']);
+    Route::put('service/delete/{id}', [ServiceController::class, 'delete_service']);
 
 });

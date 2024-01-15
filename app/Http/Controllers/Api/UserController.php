@@ -122,7 +122,7 @@ class UserController extends Controller
                     "success" => false,
                     "message" => "User not found!",
                     "data" => null
-                ], 404);
+                ], 200);
             }
 
             // Update user details including the 'status' field
@@ -131,7 +131,7 @@ class UserController extends Controller
                 'phone_number' => $request->phone_number,
                 'email' => $request->email,
                 // 'password' => bcrypt($request->password),
-                'status' => $request->status, // Assuming status is passed in the request
+                'status' => $request->status,
             ]);
             // request id role
             $role_id = $request->roles;
