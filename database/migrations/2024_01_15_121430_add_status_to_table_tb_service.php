@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class TbService extends Migration
+class AddStatusToTableTbService extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class TbService extends Migration
      */
     public function up()
     {
-        Schema::create('tb_services', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 50);
-            $table->string('description', 155);
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('tb_services', function (Blueprint $table) {
+            $table->tinyInteger('status')->default(0)->after('description');
         });
     }
 
@@ -29,6 +25,8 @@ class TbService extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tb_services');
+        Schema::table('tb_services', function (Blueprint $table) {
+            //
+        });
     }
 }
