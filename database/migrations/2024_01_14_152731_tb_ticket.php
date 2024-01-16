@@ -13,7 +13,7 @@ class TbTicket extends Migration
      */
     public function up()
     {
-        Schema::create('tb_ticket', function (Blueprint $table) {
+        Schema::create('tb_tickets', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('service_id');
             $table->integer('ticket_no')->nullable(false);
@@ -36,6 +36,6 @@ class TbTicket extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tb_ticket');
+        Schema::dropIfExists('tb_tickets');
     }
 }

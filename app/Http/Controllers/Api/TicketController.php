@@ -3,52 +3,52 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\TbService;
-use Illuminate\Auth\Events\Validated;
+use App\Models\TbTicket as ModelsTbTicket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use TbTicket;
 
-class ServiceController extends Controller
+class TicketController extends Controller
 {
-    public function list_service()
+    public function list_ticket()
     {
-        $services = TbService::withoutTrashed()->get();
+        $Ticket = ModelsTbTicket::all();
 
-        if ($services->isEmpty()) {
+        if ($Ticket->isEmpty()) {
             return response()->json([
                 "success" => false,
-                "message" => "No services found.",
+                "message" => "No Ticket found.",
                 "data" => null
             ], 200);
         }
 
         $dataRes = [];
 
-        foreach ($services as $service) {
-            $serviceData = [
-                "id" => $service->id,
-                "name" => $service->name,
-                "description" => $service->description,
-                "status" => $service->status ? "Active" : "Inactive",
-                "created_at" => $service->created_at,
-                "updated_at" => $service->created_at,
+        foreach ($Ticket as $ticket) {
+            $ticketData = [
+                "id" => $ticket->id,
+                "service_id" => $ticket->service_id,
+                "ticket_no" => $ticket->ticket_no,
+                "is_called" => $ticket->status ? "Active" : "Inactive",
+                "created_at" => $ticket->created_at,
+                "updated_at" => $ticket->created_at,
             ];
 
-            $dataRes[] = $serviceData;
+            $dataRes[] = $ticketData;
         }
 
         return response()->json([
             "success" => true,
-            "message" => "Services retrieved successfully.",
+            "message" => "Ticket retrieved successfully.",
             "data" => $dataRes,
         ], 200);
     }
 
-    public function store_service(Request $request)
+    public function store_ticket(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
+            'service_id' => 'required|integer',
+            'ticket_no' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -58,15 +58,14 @@ class ServiceController extends Controller
             ], 200);
         }
 
-        // $service = TbService::create();
-        $service = TbService::create([
-            'name' => $request->input('name'),
-            'description' => $request->input('description'),
+        $ticket = ModelsTbTicket::create([
+            'service_id' => $request->input('service_id'),
+            'ticket_no' => $request->input('ticket_no'),
         ]);
-        if ($service) {
+        if ($ticket) {
             return response()->json([
                 "success" => true,
-                "message" => "the service create is succesfully",
+                "message" => "the ticket create is succesfully",
             ], 200);
         } else {
             return response()->json([
@@ -76,7 +75,7 @@ class ServiceController extends Controller
         }
     }
 
-    public function update_service(Request $request, $id)
+    public function update_ticket(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -91,7 +90,7 @@ class ServiceController extends Controller
             ], 200);
         }
 
-        $service = TbService::find($id);
+        $service = ModelsTbTicket::find($id);
 
         if (!$service) {
             return response()->json([
@@ -114,16 +113,6 @@ class ServiceController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Service updated successfully.",
-        ], 200);
-    }
-
-    public function delete_service($id)
-    {
-        $service = TbService::find($id);
-        $service->delete();
-        return response()->json([
-            "success" => true,
-            "message" => "Service deleted successfully by soft delete",
         ], 200);
     }
 }

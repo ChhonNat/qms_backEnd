@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -41,5 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('service/list', [ServiceController::class, 'list_service'])->name('service');
     Route::put('service/{id}', [ServiceController::class, 'update_service']);
     Route::put('service/delete/{id}', [ServiceController::class, 'delete_service']);
+
+    // ticket
+    Route::post('/ticket', [TicketController::class, 'store_ticket']);
+    Route::get('/ticket/list', [TicketController::class, 'list_ticket']);
 
 });
