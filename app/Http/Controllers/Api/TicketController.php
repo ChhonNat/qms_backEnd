@@ -31,7 +31,7 @@ class TicketController extends Controller
                 "ticket_no" => $ticket->ticket_no,
                 "is_called" => $ticket->status ? "Active" : "Inactive",
                 "created_at" => $ticket->created_at,
-                "updated_at" => $ticket->created_at,
+                "updated_at" => $ticket->updated_at,
             ];
 
             $dataRes[] = $ticketData;

@@ -31,7 +31,7 @@ class ServiceController extends Controller
                 "description" => $service->description,
                 "status" => $service->status ? "Active" : "Inactive",
                 "created_at" => $service->created_at,
-                "updated_at" => $service->created_at,
+                "updated_at" => $service->updated_at,
             ];
 
             $dataRes[] = $serviceData;
