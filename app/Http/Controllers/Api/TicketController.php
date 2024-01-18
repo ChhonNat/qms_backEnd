@@ -29,7 +29,7 @@ class TicketController extends Controller
                 "id" => $ticket->id,
                 "service_id" => $ticket->service_id,
                 "ticket_no" => $ticket->ticket_no,
-                "is_called" => $ticket->status ? "Active" : "Inactive",
+                "is_called" => 0,
                 "created_at" => $ticket->created_at,
                 "updated_at" => $ticket->updated_at,
             ];

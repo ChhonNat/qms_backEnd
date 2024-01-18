@@ -47,4 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/ticket', [TicketController::class, 'store_ticket']);
     Route::get('/ticket/list', [TicketController::class, 'list_ticket']);
 
+    // counter called
+    Route::post('is_called', [CounterController::class, 'is_called']);
+
 });

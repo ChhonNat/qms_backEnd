@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\NewMessage;
 use App\Http\Controllers\Controller;
+use App\Models\TbQueue;
+use App\Models\TbTicket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class CounterController extends Controller
 {
@@ -53,6 +58,59 @@ class CounterController extends Controller
                     "data" => null
                 ], 200);
             }
+        }
+    }
+
+    // counter called
+    public function is_called(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'counter_id' => 'required|integer',
+            'q_name' => 'nullable',
+            'noted' => 'nullable'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => "counter_id fields that insert is empty!"
+            ], 200);
+        }
+
+        // list all tickets
+        // $ticketData = TbTicket::where('is_called', '!=', 0)->latest()->first();
+        $ticketData = TbTicket::latest()->first();
+
+        // define variable to insert PROCEDURE
+        $TmpParamProc = [
+            'counter_id' => $request->counter_id,
+            'service_id' => $ticketData['service_id'],
+            'q_no' => $ticketData['ticket_no'],
+            'q_name' => $request->q_name,
+            'noted' => $request->noted,
+            'is_called' => 1
+        ];
+
+        $procedureParams = [];
+
+        foreach ($TmpParamProc as $key => $value) {
+            $procedureParams[] = "'$value'";
+        }
+        $TmpParamProcedure = "CALL IsCounterCalled(" . implode(', ', $procedureParams) . ")";
+
+        // call store procedure
+        $isCalled = DB::select($TmpParamProcedure);
+        if ($isCalled) {
+            event(new NewMessage($ticketData['ticket_no']));
+            return response()->json([
+                "success" => true,
+                "message" => "Counter called is successfully",
+            ], 200);
+        } else {
+            return response()->json([
+                "success" => false,
+                "message" => "Counter called is fail!",
+            ], 200);
         }
     }
 }

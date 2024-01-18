@@ -148,7 +148,6 @@ class UserController extends Controller
                 $user->syncPermissions($user_permissions);
             }
 
-            event(new NewMessage($user));
             return response()->json([
                 "success" => true,
                 "message" => "User data updated successfully",

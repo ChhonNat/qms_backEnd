@@ -18,7 +18,7 @@ class CreateTbQueueTable extends Migration
             $table->unsignedBigInteger('counter_id');
             $table->unsignedBigInteger('service_id');
             $table->integer('q_no');
-            $table->string('name', 50);
+            $table->string('q_name', 50);
             $table->string('noted', 155);
             $table->tinyInteger('is_called')->default(0);
             $table->timestamps();
