@@ -101,10 +101,12 @@ class CounterController extends Controller
         foreach ($TmpParamProc as $key => $value) {
             $procedureParams[] = "'$value'";
         }
-        $TmpParamProcedure = "CALL IsCounterCalled(" . implode(', ', $procedureParams) . ")";
 
         // call store procedure
+
+        $TmpParamProcedure = "CALL IsCounterCalled(" . implode(', ', $procedureParams) . ")";
         $isCalled = DB::select($TmpParamProcedure);
+
         if (isset($isCalled)) {
             event(new NewMessage($ticketData['ticket_no']));
             return response()->json([

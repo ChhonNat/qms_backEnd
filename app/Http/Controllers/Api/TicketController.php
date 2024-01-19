@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\TbTicket as ModelsTbTicket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use TbTicket;
 
@@ -48,21 +49,24 @@ class TicketController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'service_id' => 'required|integer',
-            'ticket_no' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                "message" => "Some fields that insert is empty!"
+                "message" => "Service field that insert is empty!"
             ], 200);
         }
 
-        $ticket = ModelsTbTicket::create([
-            'service_id' => $request->input('service_id'),
-            'ticket_no' => $request->input('ticket_no'),
-        ]);
-        if ($ticket) {
+        // call store procedure
+
+        $sql = "CALL IsTicketed(
+            '$request->service_id'
+        )";
+
+        $ticket = DB::select($sql);
+
+        if (isset($ticket)) {
             return response()->json([
                 "success" => true,
                 "message" => "the ticket create is succesfully",
@@ -105,9 +109,9 @@ class TicketController extends Controller
         //     'description' => $request->description,
         //     'status' => $request->status
         // ]);
-        $service['name']=$request->name;
-        $service['description']=$request->description;
-        $service['status']=$request->status;
+        $service['name'] = $request->name;
+        $service['description'] = $request->description;
+        $service['status'] = $request->status;
         $service->update();
 
         return response()->json([
