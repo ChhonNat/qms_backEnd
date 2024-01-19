@@ -78,11 +78,16 @@ class CounterController extends Controller
         }
 
         // list all tickets
-        // $ticketData = TbTicket::where('is_called', '!=', 0)->latest()->first();
-        $ticketData = TbTicket::latest()->first();
-
+        $ticketData = TbTicket::where('is_called', '!=', 1)->first();
+        if(!isset($ticketData)){
+            return response()->json([
+                "success" => false,
+                "message" => "No Ticked!",
+            ], 200);
+        }
         // define variable to insert PROCEDURE
         $TmpParamProc = [
+            'ticket_id' => $ticketData['id'],
             'counter_id' => $request->counter_id,
             'service_id' => $ticketData['service_id'],
             'q_no' => $ticketData['ticket_no'],
@@ -100,7 +105,7 @@ class CounterController extends Controller
 
         // call store procedure
         $isCalled = DB::select($TmpParamProcedure);
-        if ($isCalled) {
+        if (isset($isCalled)) {
             event(new NewMessage($ticketData['ticket_no']));
             return response()->json([
                 "success" => true,
