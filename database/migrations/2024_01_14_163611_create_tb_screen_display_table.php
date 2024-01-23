@@ -13,7 +13,7 @@ class CreateTbScreenDisplayTable extends Migration
      */
     public function up()
     {
-        Schema::create('tb_screen_display', function (Blueprint $table) {
+        Schema::create('tb_screen_displays', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('vdo_id');
             $table->unsignedBigInteger('sound_id');

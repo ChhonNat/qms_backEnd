@@ -13,7 +13,7 @@ class CreateTbSoundTable extends Migration
      */
     public function up()
     {
-        Schema::create('tb_sound', function (Blueprint $table) {
+        Schema::create('tb_sounds', function (Blueprint $table) {
             $table->id();
             $table->text('path');
             $table->tinyInteger('status')->default(0);

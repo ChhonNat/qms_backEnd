@@ -13,9 +13,8 @@ class CreateTbScreenTicketTable extends Migration
      */
     public function up()
     {
-        Schema::create('tb_screen_ticket', function (Blueprint $table) {
+        Schema::create('tb_screen_tickets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('q_id');
             $table->unsignedBigInteger('service_id');
             $table->tinyInteger('status')->default(0);
             $table->timestamps();

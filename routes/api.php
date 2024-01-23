@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ScreenTicketController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TicketController;
 use Illuminate\Http\Request;
@@ -49,5 +50,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // counter called
     Route::post('is_called', [CounterController::class, 'is_called']);
+
+    // screen ticket
+    Route::post('screen-ticket', [ScreenTicketController::class, 'screen_ticket_store']);
+    Route::get('screen-ticket', [ScreenTicketController::class, 'screen_ticket_list']);
 
 });

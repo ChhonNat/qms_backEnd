@@ -13,7 +13,7 @@ class CreateTbQueueTable extends Migration
      */
     public function up()
     {
-        Schema::create('tb_queue', function (Blueprint $table) {
+        Schema::create('tb_queues', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('counter_id');
             $table->unsignedBigInteger('service_id');
