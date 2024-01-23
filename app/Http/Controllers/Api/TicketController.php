@@ -60,21 +60,24 @@ class TicketController extends Controller
 
         // call store procedure
 
-        $sql = "CALL IsTicketed(
-            '$request->service_id'
-        )";
+        $sql = "CALL IsTicketed('$request->service_id', @last_ticket_no)";
 
         $ticket = DB::select($sql);
 
-        if (isset($ticket)) {
+        $waitingNumber =  DB::select('SELECT @last_ticket_no')[0];
+        if (isset($waitingNumber) && isset($ticket)) {
+            // Extract numeric values without keys
+            $numericValues = array_values((array)$waitingNumber)[0];
+
             return response()->json([
                 "success" => true,
-                "message" => "the ticket create is succesfully",
+                "message" => "The ticket is created successfully",
+                "data" => $numericValues
             ], 200);
         } else {
             return response()->json([
                 "success" => false,
-                "message" => "the data create is fail!",
+                "message" => "Failed to create ticket",
             ], 200);
         }
     }
