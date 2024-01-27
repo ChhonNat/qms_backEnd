@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\IsTicketed;
 use App\Http\Controllers\Controller;
 use App\Models\TbTicket as ModelsTbTicket;
 use Illuminate\Http\Request;
@@ -59,20 +60,29 @@ class TicketController extends Controller
         }
 
         // call store procedure
+        $sql = "CALL IsTicketed('$request->service_id', @last_ticket_no, @waitingNumber)";
 
-        $sql = "CALL IsTicketed('$request->service_id', @last_ticket_no)";
+        $result = DB::select($sql);
 
-        $ticket = DB::select($sql);
+        // Retrieve the output parameters after the stored procedure call
+        $outputParameters = DB::select('SELECT @last_ticket_no AS last_ticket_no, @waitingNumber AS waitingNumber')[0];
 
-        $waitingNumber =  DB::select('SELECT @last_ticket_no')[0];
-        if (isset($waitingNumber) && isset($ticket)) {
-            // Extract numeric values without keys
-            $numericValues = array_values((array)$waitingNumber)[0];
+        // Access the output parameters
+        $lastTicketNo = $outputParameters->last_ticket_no;
+        $waitingNumber = $outputParameters->waitingNumber;
 
+        if (isset($result)) {
+            $data=[
+                "waintingNum"=> $waitingNumber,
+                "lastTicketed"=> $lastTicketNo,
+                "message" => "respose successfully"
+            ];
+            // send is ticketed number to another client that subcripted
+            event(new IsTicketed($data));
             return response()->json([
                 "success" => true,
                 "message" => "The ticket is created successfully",
-                "data" => $numericValues
+                "data" => $lastTicketNo
             ], 200);
         } else {
             return response()->json([

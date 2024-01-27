@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\IsTicketed;
 use App\Http\Controllers\Controller;
 use App\Models\TbScreenTicket;
 use Illuminate\Http\Request;
@@ -31,6 +32,7 @@ class ScreenTicketController extends Controller
 
         $dataScreenTicket = DB::select('CALL storeDataScreenTicket(?, ?)', [$request->service_id, $request->status]);
 
+        // get message from store procedure
         $message = $dataScreenTicket[0]->message;
 
         if ($message) {
