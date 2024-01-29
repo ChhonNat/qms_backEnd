@@ -91,8 +91,8 @@ class CounterController extends Controller
             'counter_id' => $request->counter_id,
             'service_id' => $ticketData['service_id'],
             'q_no' => $ticketData['ticket_no'],
-            'q_name' => $request->q_name,
-            'noted' => $request->noted,
+            'q_name' => $request->q_name ?? "",
+            'noted' => $request->noted ?? "",
             'is_called' => 1
         ];
 
